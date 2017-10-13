@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by imKiran
+ * Reffered to stackoverflow
  * <p/>
  * Helps with date conversion on Android.
  */

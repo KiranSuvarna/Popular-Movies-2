@@ -10,7 +10,7 @@ import com.thefuturemarketplace.popularmovies.models.Movie;
 import com.squareup.picasso.Picasso;
 
 /**
- * Created by imKiran
+ * Reffered to stackoverflow
  * <p/>
  * Custom adapter for populating GridView.
  */
