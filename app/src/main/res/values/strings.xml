@@ -1,0 +1,41 @@
+<resources>
+
+    <string name="app_name">Popular Movies</string>
+
+    <string name="string_movie_poster">Contains poster of movie</string>
+
+    <string name="string_release_date">Release Date</string>
+
+    <string name="string_release_date_example">13-10-2017</string>
+
+    <string name="string_vote_average">Vote Average</string>
+
+    <string name="string_vote_average_example">7/10</string>
+
+    <string name="string_original_title_example">The Green Poster Man</string>
+
+    <string name="string_overview_example">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</string>
+
+    <string name="no_summary_found">No summary was found</string>
+
+    <string name="no_release_date_found">No release date found</string>
+
+    <string name="parcel_movie">PARCEL_MOVIE</string>
+
+    <string name="error_need_internet">This application needs Internet connection to function.</string>
+
+    <string name="pref_sort_pop_desc_key">SORT_POPULARITY_DESC</string>
+
+    <string name="pref_sort_method_key">SORT_METHOD</string>
+
+    <string name="tmdb_sort_pop_desc">popularity.desc</string>
+
+    <string name="pref_sort_vote_avg_desc_key">SORT_VOTE_AVERAGE_DESC</string>
+
+    <string name="tmdb_sort_vote_avg_desc">vote_average.desc</string>
+
+    <string name="title_activity_movie_details">Movie Details</string>
+
+
+
+</resources>

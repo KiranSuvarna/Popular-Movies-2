@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!-- Key for themoviedb.org -->
+    <string name="key_themoviedb">API_KEY</string>
+</resources>
