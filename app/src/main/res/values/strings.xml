@@ -24,15 +24,17 @@
 
     <string name="error_need_internet">This application needs Internet connection to function.</string>
 
-    <string name="pref_sort_pop_desc_key">SORT_POPULARITY_DESC</string>
+    <string name="pref_sort_popular_key">SORT_POPULARITY</string>
 
     <string name="pref_sort_method_key">SORT_METHOD</string>
 
-    <string name="tmdb_sort_pop_desc">popularity.desc</string>
+    //url string to the popular moies from The MovieDB
+    <string name="tmdb_sort_popular">https://api.themoviedb.org/3/movie/popular</string>
 
-    <string name="pref_sort_vote_avg_desc_key">SORT_VOTE_AVERAGE_DESC</string>
+    <string name="pref_sort_toprated_key">SORT_TOP_RATED</string>
 
-    <string name="tmdb_sort_vote_avg_desc">vote_average.desc</string>
+    //url string to the top-rated moies from The MovieDB
+    <string name="tmdb_sort_toprated">https://api.themoviedb.org/3/movie/top_rated</string>
 
     <string name="title_activity_movie_details">Movie Details</string>
 
