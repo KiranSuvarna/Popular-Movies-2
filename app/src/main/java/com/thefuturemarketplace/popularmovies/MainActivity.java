@@ -8,8 +8,12 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +23,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.thefuturemarketplace.popularmovies.models.Movie;
+import com.thefuturemarketplace.popularmovies.utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +37,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Movie[]>{
+
+    private static final int POPULAR_MOVIES_ASYNKTASK_ID = 5;
+
+    private static final String URL_KEY = "url";
 
     private GridView gridView;
 
@@ -48,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         gridView = (GridView)findViewById(R.id.gridView);
         gridView.setOnItemClickListener(moviePosterClickListener);
 
+        getSupportLoaderManager().initLoader(POPULAR_MOVIES_ASYNKTASK_ID,null,this);
         getMoviesFromTMDb(getSortMethod());
     }
 
@@ -114,17 +124,24 @@ public class MainActivity extends AppCompatActivity {
         if (isNetworkAvailable()) {
             // Key needed to get data from TMDb
             String apiKey = BuildConfig.API_KEY;
+            URL theMovieDBApiCall = null;
+            try {
+               theMovieDBApiCall =  new NetworkUtils(apiKey).getApiUrl(sortMethod);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
 
-            // Listener for when AsyncTask is ready to update UI
-            OnTaskCompleted taskCompleted = new OnTaskCompleted() {
-                @Override
-                public void onFetchMoviesTaskCompleted(Movie[] movies) {
-                    gridView.setAdapter(new ImageAdapter(getApplicationContext(), movies));
-                }
-            };
+            Bundle bundle  = new Bundle();
+            bundle.putString(URL_KEY,theMovieDBApiCall.toString());
 
-            // Execute task
-            new FetchMovieAsyncTask(taskCompleted,apiKey).execute(sortMethod);
+            LoaderManager loaderManager = getSupportLoaderManager();
+            Loader<String> popularMoviesLoader = loaderManager.getLoader(POPULAR_MOVIES_ASYNKTASK_ID);
+            if(popularMoviesLoader==null){
+                loaderManager.initLoader(POPULAR_MOVIES_ASYNKTASK_ID,bundle,this);
+            }else {
+                loaderManager.restartLoader(POPULAR_MOVIES_ASYNKTASK_ID,bundle,this);
+            }
+
         } else {
             Toast.makeText(this, getString(R.string.error_need_internet), Toast.LENGTH_LONG).show();
         }
@@ -165,4 +182,61 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public Loader<Movie[]> onCreateLoader(int id, final Bundle args) {
+            return new AsyncTaskLoader<Movie[]>(this) {
+
+                Movie[] theMoviesDBResponse;
+
+                @Override
+                protected void onStartLoading() {
+                    if(args == null){
+                        return;
+                    }
+                    if(theMoviesDBResponse!=null){
+                        deliverResult(theMoviesDBResponse);
+                    }   else{
+                        forceLoad();
+                    }
+                }
+
+                @Override
+                public Movie[] loadInBackground() {
+                    String urlString = args.getString(URL_KEY);
+                    if(urlString==null || TextUtils.isEmpty(urlString)){
+                        return null;
+                    }
+                    try {
+                        URL url = new URL(urlString);
+                        String response = NetworkUtils.getResponseFromHttpUrl(url);
+                        return NetworkUtils.getMoviesDataFromJson(response);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+
+                @Override
+                public void deliverResult(Movie[] data) {
+                    theMoviesDBResponse = data;
+                    super.deliverResult(data);
+                }
+            };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Movie[]> loader, Movie[] data) {
+        if (null == data) {
+            Log.d("data",data.toString());
+            Toast.makeText(this, getString(R.string.no_data), Toast.LENGTH_LONG).show();
+        } else {
+            gridView.setAdapter(new ImageAdapter(getApplicationContext(),data));
+            Toast.makeText(this, getString(R.string.data_found), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Movie[]> loader) {
+
+    }
 }
