@@ -1,12 +1,7 @@
 package com.thefuturemarketplace.popularmovies;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -23,17 +18,9 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.thefuturemarketplace.popularmovies.models.Movie;
+import com.thefuturemarketplace.popularmovies.utils.HelperMethods;
 import com.thefuturemarketplace.popularmovies.utils.NetworkUtils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -58,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         gridView.setOnItemClickListener(moviePosterClickListener);
 
         getSupportLoaderManager().initLoader(POPULAR_MOVIES_ASYNKTASK_ID,null,this);
-        getMoviesFromTMDb(getSortMethod());
+        getMoviesFromTMDb(new HelperMethods(this).getSortMethod());
     }
 
     private final GridView.OnItemClickListener moviePosterClickListener = new GridView.OnItemClickListener() {
@@ -105,14 +92,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.string.pref_sort_popular_key:
-                updateSharedPrefs(getString(R.string.tmdb_sort_popular));
+                new HelperMethods(this).updateSharedPrefs(getString(R.string.tmdb_sort_popular));
                 updateMenu();
-                getMoviesFromTMDb(getSortMethod());
+                getMoviesFromTMDb(new HelperMethods(this).getSortMethod());
                 return true;
             case R.string.pref_sort_toprated_key:
-                updateSharedPrefs(getString(R.string.tmdb_sort_toprated));
+                new HelperMethods(this).updateSharedPrefs(getString(R.string.tmdb_sort_toprated));
                 updateMenu();
-                getMoviesFromTMDb(getSortMethod());
+                getMoviesFromTMDb(new HelperMethods(this).getSortMethod());
                 return true;
             default:
         }
@@ -121,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void getMoviesFromTMDb(String sortMethod) {
-        if (isNetworkAvailable()) {
+        if (new HelperMethods(this).isNetworkAvailable()) {
             // Key needed to get data from TMDb
             String apiKey = BuildConfig.API_KEY;
             URL theMovieDBApiCall = null;
@@ -147,23 +134,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    public  boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    private String getSortMethod() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        return prefs.getString(getString(R.string.pref_sort_method_key),
-                getString(R.string.tmdb_sort_popular));
-    }
-
     private void updateMenu() {
-        String sortMethod = getSortMethod();
+        String sortMethod = new HelperMethods(this).getSortMethod();
 
         if (sortMethod.equals(getString(R.string.tmdb_sort_popular))) {
             mMenu.findItem(R.string.pref_sort_popular_key).setVisible(false);
@@ -172,13 +144,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mMenu.findItem(R.string.pref_sort_toprated_key).setVisible(false);
             mMenu.findItem(R.string.pref_sort_popular_key).setVisible(true);
         }
-    }
-
-    private void updateSharedPrefs(String sortMethod) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.pref_sort_method_key), sortMethod);
-        editor.apply();
     }
 
 
