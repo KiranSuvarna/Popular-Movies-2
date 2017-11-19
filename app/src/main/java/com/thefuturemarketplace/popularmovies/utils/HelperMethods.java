@@ -50,7 +50,7 @@ public class HelperMethods extends ContextWrapper{
     public void watchTeaser(Context context, String id){
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.teaser_app)+id));
         Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse(getString(R.string.teaser_web)));
+                Uri.parse(getString(R.string.teaser_web)+id));
         try {
             if(appIntent.resolveActivity(getPackageManager())!=null){
                 startActivity(appIntent);

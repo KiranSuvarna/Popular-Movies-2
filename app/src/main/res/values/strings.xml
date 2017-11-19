@@ -54,6 +54,17 @@
 
     <string name="reviews">Reviews</string>
 
+    <string name="action_sort">Sort</string>
 
+    <string name="sort_by_popularity">Popular</string>
 
+    <string name="sort_by_rating">Rating</string>
+
+    <string name="sort_by_favorite">Favorite</string>
+
+    <string name="removed_favorite">Removed from favorites</string>
+
+    <string name="content_authority">com.thefuturemarketplace.popularmovies</string>
+
+    <string name="added_favorite">Saved to favorites</string>
 </resources>

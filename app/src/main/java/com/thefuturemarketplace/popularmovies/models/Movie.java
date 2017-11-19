@@ -15,6 +15,8 @@ public class Movie implements Parcelable{
     private String overview;
     private Double voteAverage;
     private String releaseDate;
+    private boolean favorite = false;
+
 
     public Movie() {
 
@@ -84,6 +86,14 @@ public class Movie implements Parcelable{
         return movieId;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -97,6 +107,7 @@ public class Movie implements Parcelable{
         dest.writeValue(voteAverage);
         dest.writeString(releaseDate);
         dest.writeString(movieId);
+        dest.writeByte((byte) (favorite ? 1 : 0));
     }
 
     private Movie(Parcel in) {
@@ -106,6 +117,7 @@ public class Movie implements Parcelable{
         voteAverage = (Double) in.readValue(Double.class.getClassLoader());
         releaseDate = in.readString();
         movieId = in.readString();
+        favorite = in.readByte()!=0;
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {

@@ -1,15 +1,12 @@
 package com.thefuturemarketplace.popularmovies;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +15,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.thefuturemarketplace.popularmovies.models.Movie;
+import com.thefuturemarketplace.popularmovies.models.Sort;
 import com.thefuturemarketplace.popularmovies.utils.HelperMethods;
 import com.thefuturemarketplace.popularmovies.utils.NetworkUtils;
 
@@ -30,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private GridView gridView;
 
-    private Menu mMenu;
+    private Sort mSort = Sort.POPULAR;
 
     private ImageAdapter imageAdapter;
 
@@ -58,50 +56,55 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     };
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sort_methods, mMenu);
-
-        // Make menu items accessible
-        mMenu = menu;
-
-        // Add menu items
-        mMenu.add(Menu.NONE, // No group
-                R.string.pref_sort_toprated_key, // ID
-                Menu.NONE, // Sort order: not relevant
-                null) // No text to display
-                .setVisible(false)
-                .setIcon(R.drawable.star3x)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-        // Same settings as the one above
-        mMenu.add(Menu.NONE,
-                R.string.pref_sort_popular_key,
-                Menu.NONE, null)
-                .setVisible(false)
-                .setIcon(R.drawable.people3x)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-        // Update menu to show relevant items
-        updateMenu();
-
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
+
+    @Override public boolean onPrepareOptionsMenu(Menu menu) {
+        switch (mSort) {
+            case POPULAR:
+                menu.findItem(R.id.sort_by_popularity).setChecked(true);
+                break;
+            case TOP_RATED:
+                menu.findItem(R.id.sort_by_rating).setChecked(true);
+                break;
+            case FAVORITE:
+                menu.findItem(R.id.sort_by_favorite).setChecked(true);
+                break;
+        }
+        return true;
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.string.pref_sort_popular_key:
+            case R.id.sort_by_popularity:
+                item.setChecked(!item.isChecked());
+                onSortChanged(Sort.POPULAR);
                 new HelperMethods(this).updateSharedPrefs(getString(R.string.tmdb_sort_popular));
-                updateMenu();
                 getMoviesFromTMDb(new HelperMethods(this).getSortMethod());
                 return true;
-            case R.string.pref_sort_toprated_key:
+            case R.id.sort_by_rating:
+                item.setChecked(!item.isChecked());
+                onSortChanged(Sort.TOP_RATED);
                 new HelperMethods(this).updateSharedPrefs(getString(R.string.tmdb_sort_toprated));
-                updateMenu();
+                getMoviesFromTMDb(new HelperMethods(this).getSortMethod());
+                return true;
+            case R.id.sort_by_favorite:
+                item.setChecked(!item.isChecked());
+                onSortChanged(Sort.FAVORITE);
+                new HelperMethods(this).updateSharedPrefs(getString(R.string.tmdb_sort_toprated));
                 getMoviesFromTMDb(new HelperMethods(this).getSortMethod());
                 return true;
             default:
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onSortChanged(Sort sort) {
+        mSort = sort;
     }
 
     private void getMoviesFromTMDb(String sortMethod) {
@@ -125,21 +128,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }else {
                 loaderManager.restartLoader(POPULAR_MOVIES_ASYNKTASK_ID,bundle,this);
             }
-
         } else {
             Toast.makeText(this, getString(R.string.error_need_internet), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void updateMenu() {
-        String sortMethod = new HelperMethods(this).getSortMethod();
-
-        if (sortMethod.equals(getString(R.string.tmdb_sort_popular))) {
-            mMenu.findItem(R.string.pref_sort_popular_key).setVisible(false);
-            mMenu.findItem(R.string.pref_sort_toprated_key).setVisible(true);
-        } else {
-            mMenu.findItem(R.string.pref_sort_toprated_key).setVisible(false);
-            mMenu.findItem(R.string.pref_sort_popular_key).setVisible(true);
         }
     }
 

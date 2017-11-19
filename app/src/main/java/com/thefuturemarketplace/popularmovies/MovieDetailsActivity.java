@@ -1,9 +1,11 @@
 package com.thefuturemarketplace.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -17,9 +19,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.thefuturemarketplace.popularmovies.database.MoviesContract;
+import com.thefuturemarketplace.popularmovies.database.MoviesOpenHelper;
+import com.thefuturemarketplace.popularmovies.event.FavoriteChangeEvent;
 import com.thefuturemarketplace.popularmovies.models.Movie;
 import com.thefuturemarketplace.popularmovies.utils.HelperMethods;
+import com.thefuturemarketplace.popularmovies.utils.LocalStoreUtil;
 import com.thefuturemarketplace.popularmovies.utils.NetworkUtils;
+import com.thefuturemarketplace.popularmovies.utils.ViewUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,6 +46,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     private final String LOG_TAG = MovieDetailsActivity.class.getSimpleName();
 
     private static final int POPULAR_MOVIES_ASYNKTASK_ID = 6;
+    private boolean isFavoriteChanged = false;
+
 
 
     @BindView(R.id.imageview_moview) ImageView imageViewPoster;
@@ -47,6 +58,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     @BindView(R.id.textview_original_title_example)  TextView textViewOriginalTitle;
     @BindView(R.id.textview_overview_example)  TextView textViewOverview;
     @BindView(R.id.imageButton_teaser) ImageButton imageButtonTeaser;
+    @BindView(R.id.favButton) FloatingActionButton favoriteButton;
+
+    private  Movie movie;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +70,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         ButterKnife.bind(this);
 
         final Intent intent = getIntent();
-        final Movie movie = intent.getParcelableExtra(getString(R.string.parcel_movie));
+        movie = intent.getParcelableExtra(getString(R.string.parcel_movie));
 
         textViewOriginalTitle.setText(movie.getOriginaltitle());
 
@@ -91,6 +105,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         }
         textViewReleasedate.setText(releaseDate);
 
+        inflateData();
+
         getSupportLoaderManager().initLoader(POPULAR_MOVIES_ASYNKTASK_ID,null,this);
         getMoviesTeaserFromTMDb(getString(R.string.tmdb_movie_teaser_url),movie.getmovieId());
     }
@@ -121,6 +137,35 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             Toast.makeText(this, getString(R.string.error_need_internet), Toast.LENGTH_LONG).show();
         }
     }
+
+
+    private void inflateData(){
+        favoriteButton.setSelected(movie.isFavorite());
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(movie.isFavorite()){
+                    LocalStoreUtil.removeFromFavorites(MovieDetailsActivity.this, movie.getmovieId());
+                    getContentResolver().delete(MoviesContract.MoviesEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(movie.getmovieId())).build(), null, null);
+
+                    ViewUtils.showToast(getResources().getString(R.string.removed_favorite),MovieDetailsActivity.this);
+                    movie.setFavorite(false);
+                }else {
+                    LocalStoreUtil.addToFavorites(MovieDetailsActivity.this, movie.getmovieId());
+                    ContentValues values = MoviesOpenHelper.getMovieContentValues(movie);
+                    getContentResolver().insert(MoviesContract.MoviesEntry.CONTENT_URI, values);
+
+                    ViewUtils.showToast(getResources().getString(R.string.added_favorite),MovieDetailsActivity.this);
+                    movie.setFavorite(true);
+                }
+                isFavoriteChanged = true;
+                favoriteButton.setSelected(movie.isFavorite());
+
+                EventBus.getDefault().post(new FavoriteChangeEvent(isFavoriteChanged));
+            }
+        });
+    }
+
 
 
     @Override

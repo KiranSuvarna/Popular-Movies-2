@@ -25,6 +25,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.thefuturemarketplace.popularmovies.MainActivity" />
         </activity>
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".database.MoviesProvider"
+            android:exported="false"
+            android:syncable="true"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
