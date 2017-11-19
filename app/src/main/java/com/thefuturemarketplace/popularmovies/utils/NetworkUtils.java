@@ -16,6 +16,7 @@
 package com.thefuturemarketplace.popularmovies.utils;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.thefuturemarketplace.popularmovies.models.Movie;
 
@@ -36,6 +37,7 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private String mApiKey = "";
+    final String API_KEY_PARAM = "api_key";
 
     public NetworkUtils(String apiKey){
         super();
@@ -45,7 +47,6 @@ public class NetworkUtils {
     public  URL getApiUrl(String parameters) throws MalformedURLException {
         final String TMDB_BASE_URL = parameters;
         //final String SORT_BY_PARAM = "sort_by";
-        final String API_KEY_PARAM = "api_key";
         final String ADULT_CONTENT = "include_adult";
 
         Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
@@ -57,6 +58,15 @@ public class NetworkUtils {
         return new URL(builtUri.toString());
     }
 
+    public URL getTheMovieTeaserUrl(String url ,String movieId) throws MalformedURLException{
+        final String TMDB_MOVIE_TEASER_URL = url;
+        Uri builtUri = Uri.parse(TMDB_MOVIE_TEASER_URL).buildUpon()
+                .appendEncodedPath(movieId)
+                .appendEncodedPath("videos")
+                .appendQueryParameter(API_KEY_PARAM,mApiKey)
+                .build();
+        return new URL(builtUri.toString());
+    }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -85,6 +95,7 @@ public class NetworkUtils {
         final String TAG_OVERVIEW = "overview";
         final String TAG_VOTE_AVERAGE = "vote_average";
         final String TAG_RELEASE_DATE = "release_date";
+        final String TAG_MOVIE_ID= "id";
 
         // Get the array containing hte movies found
         JSONObject moviesJson = new JSONObject(moviesJsonStr);
@@ -107,8 +118,22 @@ public class NetworkUtils {
             movies[i].setOverview(movieInfo.getString(TAG_OVERVIEW));
             movies[i].setVoteAverage(movieInfo.getDouble(TAG_VOTE_AVERAGE));
             movies[i].setReleaseDate(movieInfo.getString(TAG_RELEASE_DATE));
+            movies[i].setmovieId(movieInfo.getString(TAG_MOVIE_ID));
         }
 
         return movies;
+    }
+
+    public static String getMoviesTeaserIdFromJson(String moviesJsonStr) throws JSONException {
+        // JSON tags
+        final String TAG_RESULTS = "results";
+        final String TAG_MOVIE_ID= "key";
+
+        // Get the array containing hte movies found
+        JSONObject moviesJson = new JSONObject(moviesJsonStr);
+        JSONArray resultsArray = moviesJson.getJSONArray(TAG_RESULTS);
+
+        JSONObject firstTeaser = (JSONObject) resultsArray.opt(0);
+        return firstTeaser.get(TAG_MOVIE_ID).toString();
     }
 }

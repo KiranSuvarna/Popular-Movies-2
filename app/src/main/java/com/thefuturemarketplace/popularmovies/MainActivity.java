@@ -28,8 +28,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private static final int POPULAR_MOVIES_ASYNKTASK_ID = 5;
 
-    private static final String URL_KEY = "url";
-
     private GridView gridView;
 
     private Menu mMenu;
@@ -55,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             Intent intent = new Intent(getApplicationContext(), MovieDetailsActivity.class);
             intent.putExtra(getResources().getString(R.string.parcel_movie), movie);
-
             startActivity(intent);
         }
     };
@@ -119,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
 
             Bundle bundle  = new Bundle();
-            bundle.putString(URL_KEY,theMovieDBApiCall.toString());
+            bundle.putString(getString(R.string.url_key),theMovieDBApiCall.toString());
 
             LoaderManager loaderManager = getSupportLoaderManager();
             Loader<String> popularMoviesLoader = loaderManager.getLoader(POPULAR_MOVIES_ASYNKTASK_ID);
@@ -167,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 @Override
                 public Movie[] loadInBackground() {
-                    String urlString = args.getString(URL_KEY);
+                    String urlString = args.getString(getString(R.string.url_key));
                     if(urlString==null || TextUtils.isEmpty(urlString)){
                         return null;
                     }
@@ -192,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Movie[]> loader, Movie[] data) {
         if (null == data) {
-            Log.d("data",data.toString());
             Toast.makeText(this, getString(R.string.no_data), Toast.LENGTH_LONG).show();
         } else {
             gridView.setAdapter(new ImageAdapter(getApplicationContext(),data));

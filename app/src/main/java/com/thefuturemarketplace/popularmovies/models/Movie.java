@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class Movie implements Parcelable{
+    private String movieId;
     private static String DATE_FORMAT = "yyyy-MM-dd";
     private String originaltitle;
     private String posterPath;
@@ -74,6 +75,15 @@ public class Movie implements Parcelable{
         return String.valueOf(getVoteAverage()) + "/10";
     }
 
+    public void setmovieId(String movieId) {
+        this.movieId = movieId;
+    }
+
+    public String getmovieId() {
+
+        return movieId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -86,6 +96,7 @@ public class Movie implements Parcelable{
         dest.writeString(overview);
         dest.writeValue(voteAverage);
         dest.writeString(releaseDate);
+        dest.writeString(movieId);
     }
 
     private Movie(Parcel in) {
@@ -94,6 +105,7 @@ public class Movie implements Parcelable{
         overview = in.readString();
         voteAverage = (Double) in.readValue(Double.class.getClassLoader());
         releaseDate = in.readString();
+        movieId = in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {

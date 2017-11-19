@@ -42,6 +42,18 @@
 
     <string name="data_found">Data Found</string>
 
+    <string name="teasers">Teaser</string>
+
+    <string name="tmdb_movie_teaser_url">http://api.themoviedb.org/3/movie</string>
+
+    <string name="url_key">teaser_url</string>
+
+    <string name="teaser_web">http://www.youtube.com/watch?v=</string>
+
+    <string name="teaser_app">vnd.youtube:</string>
+
+    <string name="reviews">Reviews</string>
+
 
 
 </resources>

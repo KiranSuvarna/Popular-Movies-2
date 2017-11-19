@@ -12,7 +12,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         def STRING = "String"
-        buildConfigField STRING, "API_KEY", "\"<API_KEY>\""
+        buildConfigField STRING, "API_KEY", "\"c47bd15e8ca22abc069b498309c75f4d\""
     }
     buildTypes {
         release {
