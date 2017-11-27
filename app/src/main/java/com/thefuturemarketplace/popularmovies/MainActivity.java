@@ -1,12 +1,15 @@
 package com.thefuturemarketplace.popularmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,13 +17,20 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.thefuturemarketplace.popularmovies.database.MoviesContract;
+import com.thefuturemarketplace.popularmovies.database.MoviesOpenHelper;
 import com.thefuturemarketplace.popularmovies.models.Movie;
 import com.thefuturemarketplace.popularmovies.models.Sort;
 import com.thefuturemarketplace.popularmovies.utils.HelperMethods;
 import com.thefuturemarketplace.popularmovies.utils.NetworkUtils;
 
+import org.json.JSONArray;
+
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Movie[]>{
 
@@ -31,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private Sort mSort = Sort.POPULAR;
 
     private ImageAdapter imageAdapter;
+    private SQLiteDatabase sqLiteDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         gridView = (GridView)findViewById(R.id.gridView);
         gridView.setOnItemClickListener(moviePosterClickListener);
+
+        MoviesOpenHelper moviesOpenHelper = new MoviesOpenHelper(this);
+        sqLiteDatabase = moviesOpenHelper.getWritableDatabase();
 
         getSupportLoaderManager().initLoader(POPULAR_MOVIES_ASYNKTASK_ID,null,this);
         getMoviesFromTMDb(new HelperMethods(this).getSortMethod());
@@ -94,8 +109,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case R.id.sort_by_favorite:
                 item.setChecked(!item.isChecked());
                 onSortChanged(Sort.FAVORITE);
-                new HelperMethods(this).updateSharedPrefs(getString(R.string.tmdb_sort_toprated));
-                getMoviesFromTMDb(new HelperMethods(this).getSortMethod());
+                Cursor favoriteMoviesFromDb = getFavoriteMovies();
+                if(favoriteMoviesFromDb!=null) {
+                    ArrayList<Movie> movies = getFavoriteMoviesArrayObject(favoriteMoviesFromDb);
+                    Movie[] moviesArray = movies.toArray(new Movie[movies.size()]);
+                    gridView.setAdapter(new ImageAdapter(getApplicationContext(), moviesArray));
+                }
                 return true;
             default:
         }
@@ -130,6 +149,58 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         } else {
             Toast.makeText(this, getString(R.string.error_need_internet), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public Cursor getFavoriteMovies(){
+        Cursor cursor = sqLiteDatabase.query(true,
+                 MoviesContract.MoviesEntry.TABLE_MOVIES,
+                 new String[]{MoviesContract.MoviesEntry.MOVIE_ID,
+                         MoviesContract.MoviesEntry.MOVIE_ORIGINAL_TITLE,
+                         MoviesContract.MoviesEntry.MOVIE_OVERVIEW,
+                         MoviesContract.MoviesEntry.MOVIE_POSTER_PATH,
+                         MoviesContract.MoviesEntry.MOVIE_RELEASE_DATE,
+                         MoviesContract.MoviesEntry.MOVIE_VOTE_AVERAGE},
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        return cursor.equals("") ? null : cursor;
+    }
+
+    private ArrayList<Movie> getFavoriteMoviesArrayObject(Cursor cursor){
+        try{
+            ArrayList<Movie> moviesArray  = new ArrayList<Movie>();
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                Movie movie = null;
+                int moviesId = cursor.getColumnIndexOrThrow("movies_id");
+                int moviePosterPath = cursor.getColumnIndexOrThrow("movie_poster_path");
+                int movieOverview = cursor.getColumnIndexOrThrow("movie_overview");
+                int movieReleasePath = cursor.getColumnIndexOrThrow("movie_release_date");
+                int movieOriginaltitle = cursor.getColumnIndexOrThrow("movie_original_title");
+                int movieVoteAverage = cursor.getColumnIndexOrThrow("movie_vote_average");
+
+                movie = new Movie();
+                movie.setmovieId(cursor.getString(moviesId));
+                URI uri = new URI(cursor.getString(moviePosterPath));
+                String[] path = uri.getPath().split("/");
+                String actualPosterId = path[path.length-1];
+                movie.setPosterPath("/"+actualPosterId);
+                movie.setOverview(cursor.getString(movieOverview));
+                movie.setReleaseDate(cursor.getString(movieReleasePath));
+                movie.setOriginaltitle(cursor.getString(movieOriginaltitle));
+                movie.setVoteAverage(cursor.getDouble(movieVoteAverage));
+                cursor.moveToNext();
+                moviesArray.add(movie);
+            }
+            cursor.close();
+            return moviesArray;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
     }
 

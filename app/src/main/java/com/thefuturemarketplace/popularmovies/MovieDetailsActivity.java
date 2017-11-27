@@ -2,6 +2,8 @@ package com.thefuturemarketplace.popularmovies;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -61,6 +63,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     @BindView(R.id.favButton) FloatingActionButton favoriteButton;
 
     private  Movie movie;
+    private SQLiteDatabase sqLiteDatabase;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,10 +108,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         }
         textViewReleasedate.setText(releaseDate);
 
-        inflateData();
-
         getSupportLoaderManager().initLoader(POPULAR_MOVIES_ASYNKTASK_ID,null,this);
         getMoviesTeaserFromTMDb(getString(R.string.tmdb_movie_teaser_url),movie.getmovieId());
+
+        MoviesOpenHelper moviesOpenHelper = new MoviesOpenHelper(this);
+        sqLiteDatabase = moviesOpenHelper.getWritableDatabase();
+
+        inflateData();
+
     }
 
     private void getMoviesTeaserFromTMDb(String teasersUrl,String movieId) {
@@ -138,35 +145,22 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         }
     }
 
-
-    private void inflateData(){
+      private void inflateData(){
         favoriteButton.setSelected(movie.isFavorite());
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(movie.isFavorite()){
-                    LocalStoreUtil.removeFromFavorites(MovieDetailsActivity.this, movie.getmovieId());
-                    getContentResolver().delete(MoviesContract.MoviesEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(movie.getmovieId())).build(), null, null);
-
-                    ViewUtils.showToast(getResources().getString(R.string.removed_favorite),MovieDetailsActivity.this);
-                    movie.setFavorite(false);
-                }else {
-                    LocalStoreUtil.addToFavorites(MovieDetailsActivity.this, movie.getmovieId());
-                    ContentValues values = MoviesOpenHelper.getMovieContentValues(movie);
-                    getContentResolver().insert(MoviesContract.MoviesEntry.CONTENT_URI, values);
-
+                if(!movie.isFavorite()){
+                    LocalStoreUtil.addToFavorites(sqLiteDatabase,MovieDetailsActivity.this, movie);
                     ViewUtils.showToast(getResources().getString(R.string.added_favorite),MovieDetailsActivity.this);
-                    movie.setFavorite(true);
                 }
-                isFavoriteChanged = true;
-                favoriteButton.setSelected(movie.isFavorite());
+                //isFavoriteChanged = true;
+                //favoriteButton.setSelected(movie.isFavorite());
 
-                EventBus.getDefault().post(new FavoriteChangeEvent(isFavoriteChanged));
+                //EventBus.getDefault().post(new FavoriteChangeEvent(isFavoriteChanged));
             }
         });
     }
-
-
 
     @Override
     public Loader<String> onCreateLoader(int id, final Bundle args) {
