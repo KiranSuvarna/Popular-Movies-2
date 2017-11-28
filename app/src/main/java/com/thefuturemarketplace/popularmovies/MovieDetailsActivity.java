@@ -1,8 +1,6 @@
 package com.thefuturemarketplace.popularmovies;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -15,22 +13,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.thefuturemarketplace.popularmovies.database.MoviesContract;
 import com.thefuturemarketplace.popularmovies.database.MoviesOpenHelper;
-import com.thefuturemarketplace.popularmovies.event.FavoriteChangeEvent;
 import com.thefuturemarketplace.popularmovies.models.Movie;
+import com.thefuturemarketplace.popularmovies.models.MovieVideos;
+import com.thefuturemarketplace.popularmovies.utils.DBStoreUtil;
 import com.thefuturemarketplace.popularmovies.utils.HelperMethods;
 import com.thefuturemarketplace.popularmovies.utils.LocalStoreUtil;
 import com.thefuturemarketplace.popularmovies.utils.NetworkUtils;
 import com.thefuturemarketplace.popularmovies.utils.ViewUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,9 +45,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     private final String LOG_TAG = MovieDetailsActivity.class.getSimpleName();
 
     private static final int POPULAR_MOVIES_ASYNKTASK_ID = 6;
-    private boolean isFavoriteChanged = false;
-
-
 
     @BindView(R.id.imageview_moview) ImageView imageViewPoster;
     @BindView(R.id.textview_release_date_title) TextView textViewReleaseDateTitle;
@@ -115,7 +109,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         sqLiteDatabase = moviesOpenHelper.getWritableDatabase();
 
         inflateData();
-
     }
 
     private void getMoviesTeaserFromTMDb(String teasersUrl,String movieId) {
@@ -150,17 +143,36 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!movie.isFavorite()){
-                    LocalStoreUtil.addToFavorites(sqLiteDatabase,MovieDetailsActivity.this, movie);
+                    LocalStoreUtil.addToFavorites(MovieDetailsActivity.this,movie.getmovieId());
+                    DBStoreUtil.addToFavorites(sqLiteDatabase,MovieDetailsActivity.this, movie);
                     ViewUtils.showToast(getResources().getString(R.string.added_favorite),MovieDetailsActivity.this);
-                }
-                //isFavoriteChanged = true;
-                //favoriteButton.setSelected(movie.isFavorite());
-
-                //EventBus.getDefault().post(new FavoriteChangeEvent(isFavoriteChanged));
+                    movie.setFavorite(true);
             }
         });
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+
+        if(movie!=null)
+            savedInstanceState.putParcelable(Movie.TAG_MOVIES, movie);
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(Movie.TAG_MOVIES)) {
+                movie = (Movie) savedInstanceState.getParcelable(Movie.TAG_MOVIES);
+            }
+        }
+
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
 
     @Override
     public Loader<String> onCreateLoader(int id, final Bundle args) {
@@ -173,9 +185,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                 if (args == null) {
                     return;
                 }
-                //if (theMoviesDBResponse != null) {
-                    //deliverResult(theMoviesDBResponse);
-                //}
+                if (theMoviesDBResponse != null) {
+                    deliverResult(theMoviesDBResponse);
+                }
                  else {
                     forceLoad();
                 }
@@ -199,11 +211,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                 }
             }
 
-            /*@Override
+            @Override
             public void deliverResult(String data) {
                 theMoviesDBResponse = data;
                 super.deliverResult(data);
-            }*/
+            }
         };
     }
 

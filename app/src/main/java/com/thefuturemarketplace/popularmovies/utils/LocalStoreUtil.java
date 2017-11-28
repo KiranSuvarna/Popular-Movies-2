@@ -28,31 +28,54 @@ public class LocalStoreUtil {
     public static final String PREF_FAVORITE_MOVIES = "favorite_movies";
 
 
-    public static void addToFavorites(SQLiteDatabase db,final Context context, Movie movie) {
-        if(db == null){
-            return;
-        }
-        List<ContentValues> list = new ArrayList<ContentValues>();
+    public static void addToFavorites(final Context context, String movieId) {
+        SharedPreferences sp = null;
+        try {
+            sp = getSharedPreference(context);
+            Set<String> set = sp.getStringSet(PREF_FAVORITE_MOVIES, null);
+            if (set == null) set = new HashSet<>();
+            set.add(movieId);
 
-        ContentValues cv = new ContentValues();
-        cv.put(MoviesContract.MoviesEntry.MOVIE_ID, movie.getmovieId());
-        cv.put(MoviesContract.MoviesEntry.MOVIE_ORIGINAL_TITLE, movie.getOriginaltitle());
-        cv.put(MoviesContract.MoviesEntry.MOVIE_OVERVIEW,movie.getOverview());
-        cv.put(MoviesContract.MoviesEntry.MOVIE_POSTER_PATH, movie.getPosterPath());
-        cv.put(MoviesContract.MoviesEntry.MOVIE_RELEASE_DATE, movie.getReleaseDate());
-        cv.put(MoviesContract.MoviesEntry.MOVIE_VOTE_AVERAGE, movie.getVoteAverage());
-        list.add(cv);
+            SharedPreferences.Editor editor = getSharedEditor(context);
+            editor.clear();
 
-        try{
-            db.beginTransaction();
-            for(ContentValues c : list){
-                db.insert(MoviesContract.MoviesEntry.TABLE_MOVIES,null,c);
-            }
-            db.setTransactionSuccessful();
-        }catch (SQLException e){
+            editor.putStringSet(PREF_FAVORITE_MOVIES, set).apply();
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally{
-            db.endTransaction();
         }
+    }
+
+    public static void removeFromFavorites(final Context context, String movieId) {
+        SharedPreferences sp = null;
+        try {
+            sp = getSharedPreference(context);
+            Set<String> set = sp.getStringSet(PREF_FAVORITE_MOVIES, null);
+            if (set == null) set = new HashSet<>();
+            set.remove(movieId);
+
+            SharedPreferences.Editor editor = getSharedEditor(context);
+            editor.clear();
+
+            editor.putStringSet(PREF_FAVORITE_MOVIES, set).apply();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static SharedPreferences getSharedPreference(Context context)
+            throws Exception {
+        if (context == null) {
+            throw new Exception("Context null Exception");
+        }
+        return context.getSharedPreferences(PREF_FILE_NAME, 0);
+    }
+
+    private static SharedPreferences.Editor getSharedEditor(Context context)
+            throws Exception {
+        if (context == null) {
+            throw new Exception("Context null Exception");
+        }
+        return getSharedPreference(context).edit();
     }
 }

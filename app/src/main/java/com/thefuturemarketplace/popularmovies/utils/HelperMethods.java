@@ -16,7 +16,7 @@ import com.thefuturemarketplace.popularmovies.R;
 import java.net.URI;
 
 /**
- * Created by Admin on 20-Oct-17.
+ * Created by imKiran on 20-Oct-17.
  */
 
 public class HelperMethods extends ContextWrapper{
@@ -61,6 +61,8 @@ public class HelperMethods extends ContextWrapper{
             ex.printStackTrace();
         }
     }
+
+
 
 
 }

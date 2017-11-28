@@ -83,8 +83,7 @@
                 android:id="@+id/favButton"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="16dp"
                 android:src="@drawable/favorite_button_selector"
                 app:backgroundTint="@color/colorWhite"
                 app:borderWidth="0dp"
@@ -147,31 +146,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <TextView
-            android:id="@+id/textview_reviews"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:text="@string/reviews"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="@color/colorText"
-            android:textSize="@dimen/abc_text_size_headline_material" />
 
-        <TextView
-            android:id="@+id/textview_review_author_name"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            tools:text="Author" />
-
-        <TextView
-            android:id="@+id/textview_review_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="32dp"
-            android:paddingTop="16dp"
-            tools:text="@string/string_overview_example" />
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textViewAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+            <TextView
+                android:id="@+id/textViewReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+        </ScrollView>
     </LinearLayout>
 </LinearLayout>

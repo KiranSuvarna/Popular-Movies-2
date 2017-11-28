@@ -8,6 +8,9 @@ import android.os.Parcelable;
  */
 
 public class Movie implements Parcelable{
+
+    public static final String TAG_MOVIES = "movies";
+
     private String movieId;
     private static String DATE_FORMAT = "yyyy-MM-dd";
     private String originaltitle;
