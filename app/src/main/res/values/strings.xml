@@ -38,6 +38,8 @@
 
     <string name="title_activity_movie_details">Movie Details</string>
 
+    <string name="title_activity_movie_reviews">Movie Reviews</string>
+
     <string name="no_data">No Data Found</string>
 
     <string name="data_found">Data Found</string>
@@ -45,6 +47,8 @@
     <string name="teasers">Teaser</string>
 
     <string name="tmdb_movie_teaser_url">http://api.themoviedb.org/3/movie</string>
+
+    <string name="tmdb_movie_reviews_url">http://api.themoviedb.org/3/movie</string>
 
     <string name="url_key">teaser_url</string>
 
@@ -67,4 +71,9 @@
     <string name="content_authority">com.thefuturemarketplace.popularmovies</string>
 
     <string name="added_favorite">Saved to favorites</string>
+
+    <string name="error_message">
+        An error has occurred! Please try again.
+    </string>
+
 </resources>

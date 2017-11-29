@@ -26,17 +26,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.thefuturemarketplace.popularmovies.MainActivity" />
         </activity>
+        <activity
+            android:name=".ReviewsActivity"
+            android:label="@string/title_activity_movie_reviews">
+        </activity>
+
         <provider
-            android:authorities="@string/content_authority"
             android:name=".database.MoviesProvider"
+            android:authorities="@string/content_authority"
             android:exported="false"
-            android:syncable="true"
-            />
+            android:syncable="true" />
 
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
 </manifest>

@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.thefuturemarketplace.popularmovies.models.Movie;
+import com.thefuturemarketplace.popularmovies.models.MovieReviews;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,12 +40,12 @@ public class NetworkUtils {
     private String mApiKey = "";
     final String API_KEY_PARAM = "api_key";
 
-    public NetworkUtils(String apiKey){
+    public NetworkUtils(String apiKey) {
         super();
         mApiKey = apiKey;
     }
 
-    public  URL getApiUrl(String parameters) throws MalformedURLException {
+    public URL getApiUrl(String parameters) throws MalformedURLException {
         final String TMDB_BASE_URL = parameters;
         //final String SORT_BY_PARAM = "sort_by";
         final String ADULT_CONTENT = "include_adult";
@@ -52,18 +53,28 @@ public class NetworkUtils {
         Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                 //.appendQueryParameter(SORT_BY_PARAM, parameters[0])
                 .appendQueryParameter(API_KEY_PARAM, mApiKey)
-                .appendQueryParameter(ADULT_CONTENT,"false")
+                .appendQueryParameter(ADULT_CONTENT, "false")
                 .build();
 
         return new URL(builtUri.toString());
     }
 
-    public URL getTheMovieTeaserUrl(String url ,String movieId) throws MalformedURLException{
+    public URL getTheMovieTeaserUrl(String url, String movieId) throws MalformedURLException {
         final String TMDB_MOVIE_TEASER_URL = url;
         Uri builtUri = Uri.parse(TMDB_MOVIE_TEASER_URL).buildUpon()
                 .appendEncodedPath(movieId)
                 .appendEncodedPath("videos")
-                .appendQueryParameter(API_KEY_PARAM,mApiKey)
+                .appendQueryParameter(API_KEY_PARAM, mApiKey)
+                .build();
+        return new URL(builtUri.toString());
+    }
+
+    public URL getTheMovieReviewsUrl(String url, String movieId) throws MalformedURLException {
+        final String TMDB_MOVIE_TEASER_URL = url;
+        Uri builtUri = Uri.parse(TMDB_MOVIE_TEASER_URL).buildUpon()
+                .appendEncodedPath(movieId)
+                .appendEncodedPath("reviews")
+                .appendQueryParameter(API_KEY_PARAM, mApiKey)
                 .build();
         return new URL(builtUri.toString());
     }
@@ -95,7 +106,7 @@ public class NetworkUtils {
         final String TAG_OVERVIEW = "overview";
         final String TAG_VOTE_AVERAGE = "vote_average";
         final String TAG_RELEASE_DATE = "release_date";
-        final String TAG_MOVIE_ID= "id";
+        final String TAG_MOVIE_ID = "id";
 
         // Get the array containing hte movies found
         JSONObject moviesJson = new JSONObject(moviesJsonStr);
@@ -127,7 +138,7 @@ public class NetworkUtils {
     public static String getMoviesTeaserIdFromJson(String moviesJsonStr) throws JSONException {
         // JSON tags
         final String TAG_RESULTS = "results";
-        final String TAG_MOVIE_ID= "key";
+        final String TAG_MOVIE_ID = "key";
 
         // Get the array containing hte movies found
         JSONObject moviesJson = new JSONObject(moviesJsonStr);
@@ -135,5 +146,28 @@ public class NetworkUtils {
 
         JSONObject firstTeaser = (JSONObject) resultsArray.opt(0);
         return firstTeaser.get(TAG_MOVIE_ID).toString();
+    }
+
+    public static MovieReviews[] getMoviesReviewsIdFromJson(String moviesJsonStr) throws JSONException {
+        // JSON tags
+        final String TAG_RESULTS = "results";
+        final String TAG_AUTHOR = "author";
+        final String TAG_CONTENT = "content";
+
+        // Get the array containing hte movies found
+        JSONObject moviesJson = new JSONObject(moviesJsonStr);
+        JSONArray resultsArray = moviesJson.getJSONArray(TAG_RESULTS);
+
+        MovieReviews[] movieReviews = new MovieReviews[resultsArray.length()];
+
+        for (int i = 0; i < resultsArray.length(); i++) {
+            movieReviews[i] = new MovieReviews();
+
+            JSONObject moviereviews = resultsArray.getJSONObject(i);
+            movieReviews[i].setAuthor(moviereviews.getString(TAG_AUTHOR));
+            movieReviews[i].setComment(moviereviews.getString(TAG_CONTENT));
+        }
+
+        return movieReviews;
     }
 }

@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Created by imKiran
-    Layout for MovieDetails
--->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -79,6 +74,12 @@
                 android:textSize="@dimen/abc_text_size_large_material" />
 
 
+            <Button
+                android:id="@+id/button_view_reviews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See Reviews" />
+
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/favButton"
                 android:layout_width="75dp"
@@ -141,44 +142,5 @@
             app:srcCompat="@android:drawable/ic_media_play" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textview_reviews"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingTop="16dp"
-        android:text="Reviews"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:textColor="@color/colorText"
-        android:textSize="@dimen/abc_text_size_headline_material" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/textview_review_author"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Author"
-                tools:text="Author" />
-
-            <TextView
-                android:id="@+id/textview_review"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-                tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." />
-        </LinearLayout>
-
-
-    </ScrollView>
 
 </LinearLayout>

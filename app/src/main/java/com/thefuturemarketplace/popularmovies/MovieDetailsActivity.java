@@ -55,6 +55,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     @BindView(R.id.textview_overview_example)  TextView textViewOverview;
     @BindView(R.id.imageButton_teaser) ImageButton imageButtonTeaser;
     @BindView(R.id.favButton) FloatingActionButton favoriteButton;
+    @BindView(R.id.button_view_reviews) Button openReviewsButton;
+
 
     private  Movie movie;
     private SQLiteDatabase sqLiteDatabase;
@@ -109,6 +111,15 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         sqLiteDatabase = moviesOpenHelper.getWritableDatabase();
 
         inflateData();
+
+        openReviewsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ReviewsActivity.class);
+                intent.putExtra(getResources().getString(R.string.parcel_movie), movie);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getMoviesTeaserFromTMDb(String teasersUrl,String movieId) {
