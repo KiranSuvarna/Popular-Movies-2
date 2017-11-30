@@ -74,12 +74,6 @@
                 android:textSize="@dimen/abc_text_size_large_material" />
 
 
-            <Button
-                android:id="@+id/button_view_reviews"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="See Reviews" />
-
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/favButton"
                 android:layout_width="75dp"
@@ -93,6 +87,13 @@
                 app:layout_anchorGravity="top|right|end"
                 app:pressedTranslationZ="12dp"
                 app:rippleColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/button_view_reviews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="See Reviews" />
 
         </LinearLayout>
 

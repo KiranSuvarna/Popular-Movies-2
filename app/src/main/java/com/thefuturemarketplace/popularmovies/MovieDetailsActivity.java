@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.thefuturemarketplace.popularmovies.database.MoviesOpenHelper;
 import com.thefuturemarketplace.popularmovies.models.Movie;
-import com.thefuturemarketplace.popularmovies.models.MovieVideos;
 import com.thefuturemarketplace.popularmovies.utils.DBStoreUtil;
 import com.thefuturemarketplace.popularmovies.utils.HelperMethods;
 import com.thefuturemarketplace.popularmovies.utils.LocalStoreUtil;
