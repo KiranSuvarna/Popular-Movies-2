@@ -16,7 +16,7 @@ import com.thefuturemarketplace.popularmovies.R;
 import java.net.URI;
 
 /**
- * Created by imKiran on 20-Oct-17.
+ * Created by imKiran
  */
 
 public class HelperMethods extends ContextWrapper{

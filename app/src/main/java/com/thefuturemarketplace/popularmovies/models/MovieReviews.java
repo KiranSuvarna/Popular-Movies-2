@@ -1,7 +1,7 @@
 package com.thefuturemarketplace.popularmovies.models;
 
 /**
- * Created by imkiran on 29/11/17.
+ * Created by imkiran
  */
 
 public class MovieReviews {

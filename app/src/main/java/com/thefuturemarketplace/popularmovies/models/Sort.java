@@ -1,7 +1,7 @@
 package com.thefuturemarketplace.popularmovies.models;
 
 /**
- * Created by HP-HP on 27-03-2016.
+ * Created by imKiran
  */
 public enum Sort {
 

@@ -10,9 +10,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-/**
- * Created by HP-HP on 30-05-2016.
- */
 public class MoviesProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
