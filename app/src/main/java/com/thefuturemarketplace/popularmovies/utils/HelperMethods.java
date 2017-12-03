@@ -9,11 +9,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.thefuturemarketplace.popularmovies.R;
-
-import java.net.URI;
 
 /**
  * Created by imKiran

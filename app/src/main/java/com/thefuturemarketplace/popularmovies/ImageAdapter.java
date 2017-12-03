@@ -5,9 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import com.thefuturemarketplace.popularmovies.models.Movie;
 
 import com.squareup.picasso.Picasso;
+import com.thefuturemarketplace.popularmovies.models.Movie;
 
 /**
  * Reffered to stackoverflow

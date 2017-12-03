@@ -16,7 +16,6 @@
 package com.thefuturemarketplace.popularmovies.utils;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.thefuturemarketplace.popularmovies.models.Movie;
 import com.thefuturemarketplace.popularmovies.models.MovieReviews;

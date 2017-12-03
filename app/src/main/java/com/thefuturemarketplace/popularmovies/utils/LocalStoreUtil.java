@@ -1,20 +1,12 @@
 package com.thefuturemarketplace.popularmovies.utils;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.thefuturemarketplace.popularmovies.database.MoviesContract;
-import com.thefuturemarketplace.popularmovies.models.Movie;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
