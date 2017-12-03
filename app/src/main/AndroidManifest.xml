@@ -3,6 +3,7 @@
     package="com.thefuturemarketplace.popularmovies">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.thefuturemarketplace.popularmovies.TERMS_READ"/>
 
     <application
         android:allowBackup="true"

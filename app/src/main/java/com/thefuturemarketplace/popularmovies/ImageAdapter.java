@@ -14,7 +14,7 @@ import com.thefuturemarketplace.popularmovies.models.Movie;
  * <p/>
  * Custom adapter for populating GridView.
  */
-class ImageAdapter extends BaseAdapter {
+public class ImageAdapter extends BaseAdapter {
     private final Context mContext;
     private final Movie[] mMovies;
 

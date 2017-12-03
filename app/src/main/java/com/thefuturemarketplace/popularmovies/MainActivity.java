@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -110,12 +108,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 item.setChecked(!item.isChecked());
                 onSortChanged(Sort.FAVORITE);
                 new HelperMethods(this).updateSharedPrefs(getString(R.string.pref_sort_favorite_key));
-                Cursor favoriteMoviesFromDb = getFavoriteMovies(new HelperMethods(this).getSortMethod());
+                getSupportLoaderManager().initLoader(8,null,this);
+                /*Cursor favoriteMoviesFromDb = getFavoriteMovies(new HelperMethods(this).getSortMethod());
                 if(favoriteMoviesFromDb!=null) {
                     ArrayList<Movie> movies = getFavoriteMoviesArrayObject(favoriteMoviesFromDb);
                     Movie[] moviesArray = movies.toArray(new Movie[movies.size()]);
                     gridView.setAdapter(new ImageAdapter(getApplicationContext(), moviesArray));
-                }
+                }*/
                 return true;
             default:
         }
@@ -213,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onSaveInstanceState(outState);
         currentScrollPosition = gridView.getFirstVisiblePosition();
         outState.putInt(CURRENT_SCROLL_POSITION,currentScrollPosition);
-            Log.d("onSaveInstanceState",String.valueOf(currentScrollPosition));
     }
 
     @Override
@@ -221,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onRestoreInstanceState(savedInstanceState);
         if(savedInstanceState!=null) {
             currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION);
-            Log.d("onRestoreInstanceState",String.valueOf(currentScrollPosition));
         }
     }
 
