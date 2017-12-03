@@ -26,6 +26,9 @@
 
     <string name="pref_sort_popular_key">SORT_POPULARITY</string>
 
+    <string name="pref_sort_favorite_key">SORT_FAVORITE</string>
+
+
     <string name="pref_sort_method_key">SORT_METHOD</string>
 
     //url string to the popular moies from The MovieDB

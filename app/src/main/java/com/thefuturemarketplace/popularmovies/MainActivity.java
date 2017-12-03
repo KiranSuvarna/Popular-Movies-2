@@ -109,7 +109,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case R.id.sort_by_favorite:
                 item.setChecked(!item.isChecked());
                 onSortChanged(Sort.FAVORITE);
-                Cursor favoriteMoviesFromDb = getFavoriteMovies();
+                new HelperMethods(this).updateSharedPrefs(getString(R.string.pref_sort_favorite_key));
+                Cursor favoriteMoviesFromDb = getFavoriteMovies(new HelperMethods(this).getSortMethod());
                 if(favoriteMoviesFromDb!=null) {
                     ArrayList<Movie> movies = getFavoriteMoviesArrayObject(favoriteMoviesFromDb);
                     Movie[] moviesArray = movies.toArray(new Movie[movies.size()]);
@@ -152,21 +153,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    public Cursor getFavoriteMovies(){
-        Cursor cursor = sqLiteDatabase.query(true,
-                 MoviesContract.MoviesEntry.TABLE_MOVIES,
-                 new String[]{MoviesContract.MoviesEntry.MOVIE_ID,
-                         MoviesContract.MoviesEntry.MOVIE_ORIGINAL_TITLE,
-                         MoviesContract.MoviesEntry.MOVIE_OVERVIEW,
-                         MoviesContract.MoviesEntry.MOVIE_POSTER_PATH,
-                         MoviesContract.MoviesEntry.MOVIE_RELEASE_DATE,
-                         MoviesContract.MoviesEntry.MOVIE_VOTE_AVERAGE},
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+    public Cursor getFavoriteMovies(String sortMethod){
+        Cursor cursor = null;
+        if(sortMethod.equals(getString(R.string.pref_sort_favorite_key))) {
+            cursor = sqLiteDatabase.query(true,
+                    MoviesContract.MoviesEntry.TABLE_MOVIES,
+                    new String[]{MoviesContract.MoviesEntry.MOVIE_ID,
+                            MoviesContract.MoviesEntry.MOVIE_ORIGINAL_TITLE,
+                            MoviesContract.MoviesEntry.MOVIE_OVERVIEW,
+                            MoviesContract.MoviesEntry.MOVIE_POSTER_PATH,
+                            MoviesContract.MoviesEntry.MOVIE_RELEASE_DATE,
+                            MoviesContract.MoviesEntry.MOVIE_VOTE_AVERAGE},
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+        }
         return cursor.equals("") ? null : cursor;
     }
 
