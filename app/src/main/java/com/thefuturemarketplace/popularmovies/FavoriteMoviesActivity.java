@@ -27,10 +27,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-import com.thefuturemarketplace.popularmovies.ImageAdapter;
-
-import butterknife.BindView;
-
 /**
  * Created by imkiran on 03/12/17.
  */
