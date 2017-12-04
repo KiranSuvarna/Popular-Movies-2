@@ -50,8 +50,7 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements LoaderM
 
         gridView = (GridView) findViewById(R.id.gridView);
         gridView.setOnItemClickListener(moviePosterClickListener);
-        getSupportLoaderManager().initLoader(POPULAR_MOVIES_ASYNKTASK_ID,null,this);
-        Log.d("favoriteMoviesOnCreate","favorite movies on create is clicked");
+        getSupportLoaderManager().initLoader(POPULAR_MOVIES_ASYNKTASK_ID, null, this);
         getFavoriteMovies();
     }
 
@@ -59,24 +58,21 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements LoaderM
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Movie movie = (Movie) parent.getItemAtPosition(position);
-
             Intent intent = new Intent(getApplicationContext(), MovieDetailsActivity.class);
             intent.putExtra(getResources().getString(R.string.parcel_movie), movie);
             startActivity(intent);
         }
     };
 
-    public void getFavoriteMovies(){
-        Bundle bundle  = new Bundle();
-        bundle.putString(getString(R.string.url_key),"test");
+    public void getFavoriteMovies() {
+        Bundle bundle = new Bundle();
+        bundle.putString(getString(R.string.favorite_movies_bundle_key), getString(R.string.favorite_movie_bunble));
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<String> popularMoviesLoader = loaderManager.getLoader(POPULAR_MOVIES_ASYNKTASK_ID);
-        if(popularMoviesLoader==null){
-            loaderManager.initLoader(POPULAR_MOVIES_ASYNKTASK_ID,bundle,this);
-            Log.d("getFavoriteMovies","loader is gonna call");
-        }else {
-            loaderManager.restartLoader(POPULAR_MOVIES_ASYNKTASK_ID,bundle,this);
-            Log.d("getFavoriteMovies","loader is gonna restart");
+        if (popularMoviesLoader == null) {
+            loaderManager.initLoader(POPULAR_MOVIES_ASYNKTASK_ID, bundle, this);
+        } else {
+            loaderManager.restartLoader(POPULAR_MOVIES_ASYNKTASK_ID, bundle, this);
         }
     }
 
@@ -84,13 +80,13 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements LoaderM
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         currentScrollPosition = gridView.getFirstVisiblePosition();
-        outState.putInt(CURRENT_SCROLL_POSITION,currentScrollPosition);
+        outState.putInt(CURRENT_SCROLL_POSITION, currentScrollPosition);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if(savedInstanceState!=null) {
+        if (savedInstanceState != null) {
             currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION);
         }
     }
@@ -104,7 +100,6 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements LoaderM
             @Override
             protected void onStartLoading() {
                 if (args == null) {
-                    Log.d("onStartLoading","no bungle args");
                     return;
                 }
                 if (favoriteMoviesCursorRes != null) {
@@ -117,8 +112,6 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements LoaderM
             @Override
             public Cursor loadInBackground() {
                 ContentResolver resolver = getContentResolver();
-                Log.d("loadinbackground","inside loadin background");
-
                 // Call the query method on the resolver with the correct Uri from the contract class
                 Cursor cursor = resolver.query(MoviesContract.MoviesEntry.CONTENT_URI,
                         new String[]{"DISTINCT " + MoviesContract.MoviesEntry.MOVIE_ID,
@@ -127,7 +120,6 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements LoaderM
                                 MoviesContract.MoviesEntry.MOVIE_POSTER_PATH,
                                 MoviesContract.MoviesEntry.MOVIE_RELEASE_DATE,
                                 MoviesContract.MoviesEntry.MOVIE_VOTE_AVERAGE}, null, null, null);
-                Log.d("cursorResFirst", cursor.toString());
                 return cursor;
             }
         };
@@ -138,7 +130,6 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements LoaderM
         if (null == cursor) {
             Toast.makeText(this, getString(R.string.no_data), Toast.LENGTH_LONG).show();
         } else {
-            Log.d("cursorRes",String.valueOf(cursor.getColumnCount()));
             ArrayList<Movie> moviesArray = new ArrayList<Movie>();
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -168,7 +159,6 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements LoaderM
                 cursor.moveToNext();
                 moviesArray.add(movie);
                 Movie[] moviesArrays = moviesArray.toArray(new Movie[moviesArray.size()]);
-                Log.d("favoriteMovies",new Gson().toJson(moviesArray));
                 gridView.setAdapter(new ImageAdapter(this, moviesArrays));
                 gridView.setSelection(currentScrollPosition);
             }

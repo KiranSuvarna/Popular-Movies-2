@@ -60,6 +60,8 @@
 
     <string name="favorite_movies_bundle_key">Favorites</string>
 
+    <string name="favorite_movie_bunble">Favorites</string>
+
     <string name="teaser_web">http://www.youtube.com/watch?v=</string>
 
     <string name="teaser_app">vnd.youtube:</string>
