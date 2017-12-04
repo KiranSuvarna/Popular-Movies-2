@@ -33,6 +33,11 @@
             android:name=".ReviewsActivity"
             android:label="@string/title_activity_movie_reviews">
         </activity>
+        <activity
+            android:name=".FavoriteMoviesActivity"
+            android:label="@string/title_activity_favorites"
+            android:parentActivityName=".MainActivity">
+        </activity>
 
         <provider
             android:name=".database.MoviesProvider"

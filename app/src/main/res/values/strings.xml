@@ -43,6 +43,9 @@
 
     <string name="title_activity_movie_reviews">Movie Reviews</string>
 
+    <string name="title_activity_favorites">Favorite Movies</string>
+
+
     <string name="no_data">No Data Found</string>
 
     <string name="data_found">Data Found</string>
@@ -54,6 +57,8 @@
     <string name="tmdb_movie_reviews_url">http://api.themoviedb.org/3/movie</string>
 
     <string name="url_key">teaser_url</string>
+
+    <string name="favorite_movies_bundle_key">Favorites</string>
 
     <string name="teaser_web">http://www.youtube.com/watch?v=</string>
 
@@ -78,5 +83,7 @@
     <string name="error_message">
         An error has occurred! Please try again.
     </string>
+
+    <string name="action_bar_favorite">ActionBar Favorite</string>
 
 </resources>

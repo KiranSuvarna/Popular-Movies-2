@@ -9,6 +9,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,9 +82,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case TOP_RATED:
                 menu.findItem(R.id.sort_by_rating).setChecked(true);
                 break;
-            case FAVORITE:
-                menu.findItem(R.id.sort_by_favorite).setChecked(true);
-                break;
         }
         return true;
     }
@@ -104,23 +102,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new HelperMethods(this).updateSharedPrefs(getString(R.string.tmdb_sort_toprated));
                 getMoviesFromTMDb(new HelperMethods(this).getSortMethod());
                 return true;
-            case R.id.sort_by_favorite:
-                item.setChecked(!item.isChecked());
-                onSortChanged(Sort.FAVORITE);
-                new HelperMethods(this).updateSharedPrefs(getString(R.string.pref_sort_favorite_key));
-                getSupportLoaderManager().initLoader(8,null,this);
-                /*Cursor favoriteMoviesFromDb = getFavoriteMovies(new HelperMethods(this).getSortMethod());
-                if(favoriteMoviesFromDb!=null) {
-                    ArrayList<Movie> movies = getFavoriteMoviesArrayObject(favoriteMoviesFromDb);
-                    Movie[] moviesArray = movies.toArray(new Movie[movies.size()]);
-                    gridView.setAdapter(new ImageAdapter(getApplicationContext(), moviesArray));
-                }*/
+            case R.id.favorite:
+                Log.d("favoriteClicked","favorite is clicked");
+                Intent intent = new Intent(this,FavoriteMoviesActivity.class);
+                startActivity(intent);
                 return true;
             default:
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void onSortChanged(Sort sort) {
         mSort = sort;

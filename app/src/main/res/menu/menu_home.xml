@@ -5,9 +5,9 @@
 
     <item
         android:id="@+id/action_sort"
+        android:icon="@drawable/ic_sort_24dp"
         android:orderInCategory="100"
         android:title="@string/action_sort"
-        android:icon="@drawable/ic_sort_24dp"
         app:showAsAction="always">
 
         <menu>
@@ -22,12 +22,14 @@
                 <item
                     android:id="@+id/sort_by_rating"
                     android:title="@string/sort_by_rating" />
-
-                <item
-                    android:id="@+id/sort_by_favorite"
-                    android:title="@string/sort_by_favorite" />
             </group>
         </menu>
 
+    </item>
+    <item
+        android:id="@+id/favorite"
+        android:icon="@drawable/ic_favorite_white_24dp"
+        android:title="@string/action_bar_favorite"
+        app:showAsAction="always">
     </item>
 </menu>
