@@ -1,5 +1,6 @@
 package com.thefuturemarketplace.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.thefuturemarketplace.popularmovies.database.MoviesContract;
 import com.thefuturemarketplace.popularmovies.database.MoviesOpenHelper;
 import com.thefuturemarketplace.popularmovies.models.Movie;
 import com.thefuturemarketplace.popularmovies.utils.DBStoreUtil;
@@ -154,7 +156,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             @Override
             public void onClick(View view) {
                     LocalStoreUtil.addToFavorites(MovieDetailsActivity.this,movie.getmovieId());
-                    DBStoreUtil.addToFavorites(sqLiteDatabase,MovieDetailsActivity.this, movie);
+                    ContentValues contentValues = DBStoreUtil.getContentValues(movie);
+                    getContentResolver().insert(MoviesContract.MoviesEntry.CONTENT_URI,contentValues);
                     ViewUtils.showToast(getResources().getString(R.string.added_favorite),MovieDetailsActivity.this);
                     movie.setFavorite(true);
             }

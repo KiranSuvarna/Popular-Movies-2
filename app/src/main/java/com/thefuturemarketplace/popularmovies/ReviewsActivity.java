@@ -169,7 +169,6 @@ public class ReviewsActivity extends AppCompatActivity implements LoaderManager.
         loadingIndicator.setVisibility(View.INVISIBLE);
         movieReviewsAdapter.setMoviesReviews(data);
         recyclerView.getLayoutManager().onRestoreInstanceState(currentScrollPosition);
-        Log.d("dataloaded",new Gson().toJson(data));
         if (null == data) {
             showErrorMessage();
             Toast.makeText(this, getString(R.string.no_data), Toast.LENGTH_LONG).show();
