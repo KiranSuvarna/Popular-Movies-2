@@ -2,6 +2,7 @@ package com.thefuturemarketplace.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.thefuturemarketplace.popularmovies.models.Movie;
 import com.thefuturemarketplace.popularmovies.models.MovieReviews;
+import com.thefuturemarketplace.popularmovies.models.Sort;
 import com.thefuturemarketplace.popularmovies.utils.HelperMethods;
 import com.thefuturemarketplace.popularmovies.utils.NetworkUtils;
 
@@ -35,6 +37,10 @@ public class ReviewsActivity extends AppCompatActivity implements LoaderManager.
     private TextView errorMessageDisplay;
 
     private ProgressBar loadingIndicator;
+
+    private String CURRENT_SCROLL_POSITION = "current_scroll_position";
+
+    private Parcelable currentScrollPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +111,20 @@ public class ReviewsActivity extends AppCompatActivity implements LoaderManager.
         recyclerView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(CURRENT_SCROLL_POSITION,recyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState!=null) {
+            currentScrollPosition = savedInstanceState.getParcelable(CURRENT_SCROLL_POSITION);
+        }
+    }
+
 
     @Override
     public Loader<MovieReviews[]> onCreateLoader(int id, final Bundle args) {
@@ -148,6 +168,7 @@ public class ReviewsActivity extends AppCompatActivity implements LoaderManager.
     public void onLoadFinished(Loader<MovieReviews[]> loader, MovieReviews[] data) {
         loadingIndicator.setVisibility(View.INVISIBLE);
         movieReviewsAdapter.setMoviesReviews(data);
+        recyclerView.getLayoutManager().onRestoreInstanceState(currentScrollPosition);
         Log.d("dataloaded",new Gson().toJson(data));
         if (null == data) {
             showErrorMessage();
