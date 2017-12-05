@@ -148,61 +148,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    public Cursor getFavoriteMovies(String sortMethod){
-        Cursor cursor = null;
-        if(sortMethod.equals(getString(R.string.pref_sort_favorite_key))) {
-            cursor = sqLiteDatabase.query(true,
-                    MoviesContract.MoviesEntry.TABLE_MOVIES,
-                    new String[]{MoviesContract.MoviesEntry.MOVIE_ID,
-                            MoviesContract.MoviesEntry.MOVIE_ORIGINAL_TITLE,
-                            MoviesContract.MoviesEntry.MOVIE_OVERVIEW,
-                            MoviesContract.MoviesEntry.MOVIE_POSTER_PATH,
-                            MoviesContract.MoviesEntry.MOVIE_RELEASE_DATE,
-                            MoviesContract.MoviesEntry.MOVIE_VOTE_AVERAGE},
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null);
-        }
-        return cursor.equals("") ? null : cursor;
-    }
-
-    private ArrayList<Movie> getFavoriteMoviesArrayObject(Cursor cursor){
-        try{
-            ArrayList<Movie> moviesArray  = new ArrayList<Movie>();
-            cursor.moveToFirst();
-            while(!cursor.isAfterLast()) {
-                Movie movie = null;
-                int moviesId = cursor.getColumnIndexOrThrow("movies_id");
-                int moviePosterPath = cursor.getColumnIndexOrThrow("movie_poster_path");
-                int movieOverview = cursor.getColumnIndexOrThrow("movie_overview");
-                int movieReleasePath = cursor.getColumnIndexOrThrow("movie_release_date");
-                int movieOriginaltitle = cursor.getColumnIndexOrThrow("movie_original_title");
-                int movieVoteAverage = cursor.getColumnIndexOrThrow("movie_vote_average");
-
-                movie = new Movie();
-                movie.setmovieId(cursor.getString(moviesId));
-                URI uri = new URI(cursor.getString(moviePosterPath));
-                String[] path = uri.getPath().split("/");
-                String actualPosterId = path[path.length-1];
-                movie.setPosterPath("/"+actualPosterId);
-                movie.setOverview(cursor.getString(movieOverview));
-                movie.setReleaseDate(cursor.getString(movieReleasePath));
-                movie.setOriginaltitle(cursor.getString(movieOriginaltitle));
-                movie.setVoteAverage(cursor.getDouble(movieVoteAverage));
-                cursor.moveToNext();
-                moviesArray.add(movie);
-            }
-            cursor.close();
-            return moviesArray;
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
