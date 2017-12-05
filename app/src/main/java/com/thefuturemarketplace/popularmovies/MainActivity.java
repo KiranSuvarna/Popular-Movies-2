@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private GridView gridView;
 
+    private final String TAG_SORT = "sort";
+
     private Sort mSort = Sort.POPULAR;
 
     private SQLiteDatabase sqLiteDatabase;
@@ -204,6 +206,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (mSort != null)
+            outState.putSerializable(TAG_SORT, mSort);
         currentScrollPosition = gridView.getFirstVisiblePosition();
         outState.putInt(CURRENT_SCROLL_POSITION,currentScrollPosition);
     }
@@ -213,6 +217,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onRestoreInstanceState(savedInstanceState);
         if(savedInstanceState!=null) {
             currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION);
+        }
+        if (savedInstanceState.containsKey(TAG_SORT)) {
+            mSort = (Sort) savedInstanceState.getSerializable(TAG_SORT);
         }
     }
 
